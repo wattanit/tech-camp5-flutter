@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'animal_view.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -52,9 +53,7 @@ class AnimalGrid extends StatelessWidget {
 
     List<AnimalCard> animalCards = animals.map((animal) =>
       AnimalCard(
-        name: animal.name,
-        description: animal.description,
-        photoUrl: animal.photoUrl,
+        animal: animal,
       )
     ).toList();
 
@@ -71,37 +70,39 @@ class AnimalGrid extends StatelessWidget {
 class AnimalCard extends StatelessWidget {
   const AnimalCard({
     Key? key,
-    required this.name,
-    this.description = "",
-    this.photoUrl,
+    required this.animal,
   }) : super(key: key);
 
-  final String name;
-  final String description;
-  final String? photoUrl;
+  final Animal animal;
 
   @override
   Widget build(BuildContext context) {
 
-    Widget photo = (photoUrl != null)? Image(
-      image: AssetImage(photoUrl!),
+    Widget photo = (animal.photoUrl != '')? Image(
+      image: AssetImage(animal.photoUrl),
     ): const Text("No Photo");
 
     return Card(
       color: Colors.teal[100],
-      child: Column(
-        children: <Widget>[
-          photo,
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 20
+      child: InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AnimalViewPage(animal: animal,)));
+        },
+        child: Column(
+          children: <Widget>[
+            photo,
+            Text(
+              animal.name,
+              style: const TextStyle(
+                fontSize: 20
+              ),
             ),
-          ),
-          Text(
-            description
-          )
-        ],
+            Text(
+                animal.description
+            )
+          ],
+        )
       )
     );
     // return Container(
