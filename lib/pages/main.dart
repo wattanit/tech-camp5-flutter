@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animal_view.dart';
+import 'animal_submit.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -33,7 +34,9 @@ class _MainPageState extends State<MainPage> {
       ),
       body: AnimalGrid(animals: animals),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>const AnimalSubmitPage()));
+        },
         child: const Icon(Icons.add),
       ),
     );

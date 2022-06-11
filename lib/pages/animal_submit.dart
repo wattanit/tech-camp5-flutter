@@ -5,8 +5,15 @@ class AnimalSubmitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: const Text("Animal Submit"),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Submit an animal"),
+      ),
+      body: Column(
+        children: const [
+          Text("To be implemented")
+        ]
+      ),
     );
   }
 }
