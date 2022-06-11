@@ -8,13 +8,29 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  List<Animal> animals = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Fetch data from Server here
+
+    // Stub loads from dummy
+    DummyData dummy = DummyData();
+    setState(() {
+      animals = dummy.animals;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Dog Cat Matcher"),
       ),
-      body: const AnimalGrid(),
+      body: AnimalGrid(animals: animals),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
         child: const Icon(Icons.add),
@@ -24,14 +40,17 @@ class _MainPageState extends State<MainPage> {
 }
 
 class AnimalGrid extends StatelessWidget {
-  const AnimalGrid({Key? key}) : super(key: key);
+  const AnimalGrid({
+    Key? key,
+    required this.animals
+  }) : super(key: key);
+
+  final List<Animal> animals;
 
   @override
   Widget build(BuildContext context) {
 
-    // dummy data (STUB)
-    DummyData dummy = DummyData();
-    List<AnimalCard> animalCards = dummy.animals.map((animal) =>
+    List<AnimalCard> animalCards = animals.map((animal) =>
       AnimalCard(
         name: animal.name,
         description: animal.description,
