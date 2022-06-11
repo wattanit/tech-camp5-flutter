@@ -65,6 +65,10 @@ flutter:
   assets:
     - assets/welcome.jpg
     - assets/2.0x/welcome.jpg
+    - assets/dummy1.jpg
+    - assets/dummy2.jpg
+    - assets/dummy3.jpg
+    - assets/dummy4.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
