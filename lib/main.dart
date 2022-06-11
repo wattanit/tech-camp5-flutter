@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/": (context)=>const LoginPage(),
-        "/main": (context)=> const MainPage(),
+        "/main": (context)=>const MainPage(),
         "/register": (context)=> const RegisterPage(),
         "/animal_view": (context)=> const AnimalViewPage(),
         "/animal_submit": (context)=> const AnimalSubmitPage()

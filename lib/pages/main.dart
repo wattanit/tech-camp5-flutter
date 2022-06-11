@@ -5,8 +5,11 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: const Text("Main Page"),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Dog Cat Matcher"),
+      ),
+      body: const Text("Main page"),
     );
   }
 }

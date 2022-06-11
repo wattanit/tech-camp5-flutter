@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -12,6 +14,27 @@ class _RegisterPageState extends State<RegisterPage> {
   String _formEmail = "";
   String _formPassword = "";
   String _formContact = "";
+
+  void handleSubmit() async{
+    final response = await http.post(
+      Uri.parse("http://127.0.0.1:4000/api/user"),
+      headers: {
+        "Content-type": "application/json"
+      },
+      body: json.encode({
+        "name": _formName,
+        "email": _formEmail,
+        "password": _formPassword,
+        "contact": _formContact
+      })
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushNamed(context, "/");
+    }else{
+      throw Exception('Error response: '+ response.statusCode.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 15),
             ElevatedButton(
-                onPressed: (){},
+                onPressed: handleSubmit,
                 child: const Text("Create Account")
             )
           ],

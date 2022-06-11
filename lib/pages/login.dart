@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,6 +12,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _formEmail = "";
   String _formPassword = "";
+  
+  void handleLogin() async {
+    final response = await http.post(
+      Uri.parse("http://127.0.0.1:4000/api/login"),
+      headers: {
+        "Content-type": "application/json"
+      },
+      body: json.encode({
+        "email": _formEmail,
+        "password": _formPassword
+      })
+    );
+
+    if (response.statusCode == 200){
+      Navigator.pushNamedAndRemoveUntil(context, "/main", (Route<dynamic> route) => false);
+    }else{
+      throw Exception("Server error: "+response.statusCode.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Column(
         children: <Widget>[
           const Image(
-            image: AssetImage('welcome.jpg'),
+            image: AssetImage('assets/welcome.jpg'),
           ),
           const Text(
             "Dog Cat Matcher Mobile",
@@ -25,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               fontSize: 26,
             ),
           ),
-          const SizedBox(height: 50),
+          // const SizedBox(height: 50),
           Center(
             child: TextField(
               onChanged: (value){
@@ -54,9 +75,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-              onPressed: (){
-                Navigator.pushNamed(context, "/main");
-              },
+              onPressed: handleLogin,
               style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 20),
                   padding: const EdgeInsets.all(16.0)
