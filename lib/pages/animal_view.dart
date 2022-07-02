@@ -12,8 +12,11 @@ class AnimalViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Widget photo = (animal.photoUrl != '')? Image(
-      image: AssetImage(animal.photoUrl),
+    // Widget photo = (animal.photoUrl != '')? Image(
+    //   image: AssetImage(animal.photoUrl),
+    // ): const Text("No Photo");
+    Widget photo = (animal.photoUrl != '')? Image.network(
+        "http://127.0.0.1:4000"+animal.photoUrl
     ): const Text("No Photo");
 
     List<TextButton> tags = animal.tags.map((tag)=>
