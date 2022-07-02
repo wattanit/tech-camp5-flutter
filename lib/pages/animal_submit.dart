@@ -3,8 +3,10 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final logger = Logger();
+final ImagePicker _picker = ImagePicker();
 
 class AnimalSubmitPage extends StatefulWidget {
   const AnimalSubmitPage({Key? key}) : super(key: key);
@@ -18,15 +20,21 @@ class _AnimalSubmitPageState extends State<AnimalSubmitPage> {
   String _formDescription = "";
   String _formNewTag = "";
   List<String> _formTags = [];
+  XFile? _formImage;
 
   final newTagField = TextEditingController();
 
   void handleSubmit() async{
     logger.d("Sending request to POST /api/animal");
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+
     final response = await http.post(
       Uri.parse("http://127.0.0.1:4000/api/animal"),
       headers: {
-        "Content-type": "application/json"
+        "Content-type": "application/json",
+        'Authorization': 'Bearer $token',
       },
       body: json.encode({
         "name": _formName,
@@ -37,20 +45,54 @@ class _AnimalSubmitPageState extends State<AnimalSubmitPage> {
 
     if (response.statusCode == 200){
       logger.d("Received success response from POST /api/animal");
-      Navigator.pop(context);
+
+      final res = json.decode(response.body);
+      final animalId = res["id"];
+
+      if (_formImage!=null){
+        var photoBytes = await _formImage?.readAsBytes();
+
+        var uploadRequest = http.MultipartRequest("POST",
+            Uri.parse("http://127.0.0.1:4000/api/uploadPhoto")
+        );
+        uploadRequest.headers["Authorization"] = 'Bearer $token';
+        uploadRequest.fields["id"] = animalId;
+
+        uploadRequest.files.add(
+            http.MultipartFile.fromBytes("photo", photoBytes!)
+        );
+        logger.d("Sending upload photo request to POST /api/uploadPhoto");
+        var uploadResponse = await uploadRequest.send();
+
+        if (uploadResponse.statusCode==201){
+          logger.d("Received success response from POST /api/uploadPhoto");
+          Navigator.pop(context);
+        }else{
+          logger.d("Error response: "+ uploadResponse.statusCode.toString());
+          Navigator.pop(context);
+        }
+      }else{
+        Navigator.pop(context);
+      }
+    }else{
+      logger.d("Error response: "+ response.statusCode.toString());
     }
   }
 
   void handleSelectPhoto() async {
-    final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    logger.d(image);
+    setState(() {
+      _formImage = image;
+    });
+    logger.d("Select an image");
   }
 
   void handleTakePhoto() async {
-    final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    logger.d(image);
+    setState(() {
+      _formImage = image;
+    });
+    logger.d("Take an image");
   }
 
   @override
@@ -165,7 +207,7 @@ class _AnimalSubmitPageState extends State<AnimalSubmitPage> {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-                onPressed: (){},
+                onPressed: handleSubmit,
                 child: const Text("Submit")
             )
           ]
