@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -16,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _formContact = "";
 
   void handleSubmit() async{
+    logger.d("Sending request to POST /api/user");
     final response = await http.post(
       Uri.parse("http://127.0.0.1:4000/api/user"),
       headers: {
@@ -30,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
+      logger.d("Received response from POST /api/user");
       Navigator.pushNamed(context, "/");
     }else{
       throw Exception('Error response: '+ response.statusCode.toString());

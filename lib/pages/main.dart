@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'animal_view.dart';
 import 'animal_submit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -26,11 +27,28 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void handleLogout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("token");
+    Navigator.pushReplacementNamed(context, "/");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Dog Cat Matcher"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: (){
+                handleLogout();
+              },
+              child: const Icon(Icons.logout),
+            ),
+          )
+        ],
       ),
       body: AnimalGrid(animals: animals),
       floatingActionButton: FloatingActionButton(
