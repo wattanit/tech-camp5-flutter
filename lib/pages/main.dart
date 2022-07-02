@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'animal_view.dart';
 import 'animal_submit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -19,12 +21,45 @@ class _MainPageState extends State<MainPage> {
     super.initState();
 
     // Fetch data from Server here
+    fetchData();
 
     // Stub loads from dummy
-    DummyData dummy = DummyData();
-    setState(() {
-      animals = dummy.animals;
-    });
+    // DummyData dummy = DummyData();
+    // setState(() {
+    //   animals = dummy.animals;
+    // });
+  }
+  
+  void fetchData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+
+    logger.d("Fetching data from /api/animals");
+    var response = await http.get(Uri.parse("http://127.0.0.1:4000/api/animals"),
+        headers: {
+          "Authorization": "Bearer $token",
+        }
+    );
+
+    if (response.statusCode==200){
+      List<dynamic> animalJsonList = json.decode(response.body);
+      List<Animal> animalList = [];
+      for (var i=0; i<animalJsonList.length; i++){
+        var json = animalJsonList[i];
+        List<dynamic> tagList = json['tags'];
+        var tags = tagList.map((t)=>t.toString()).toList();
+        var newAnimal = Animal(
+          json["name"],
+          json["description"], tags,
+          json["photoUrls"]
+        );
+        animalList.add(newAnimal);
+      }
+
+      setState(() {
+        animals = animalList;
+      });
+    }
   }
 
   void handleLogout() async {
@@ -43,7 +78,8 @@ class _MainPageState extends State<MainPage> {
             padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
               onTap: (){
-                handleLogout();
+                // handleLogout();
+                fetchData();
               },
               child: const Icon(Icons.logout),
             ),
