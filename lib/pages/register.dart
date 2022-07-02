@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
-      logger.d("Received response from POST /api/user");
+      logger.d("Received success response from POST /api/user");
       Navigator.pushNamed(context, "/");
     }else{
       throw Exception('Error response: '+ response.statusCode.toString());
