@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
 
 final logger = Logger();
 
@@ -38,6 +39,18 @@ class _AnimalSubmitPageState extends State<AnimalSubmitPage> {
       logger.d("Received success response from POST /api/animal");
       Navigator.pop(context);
     }
+  }
+
+  void handleSelectPhoto() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    logger.d(image);
+  }
+
+  void handleTakePhoto() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    logger.d(image);
   }
 
   @override
@@ -91,7 +104,27 @@ class _AnimalSubmitPageState extends State<AnimalSubmitPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                      onPressed: handleSelectPhoto,
+                      child: const Text("Upload photo")
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                      onPressed: handleTakePhoto,
+                      child: const Text("Take photo")
+                      )
+                )
+              ],
+            ),
+            const SizedBox(height: 5),
             const Text("Tags"),
             Center(
               child: TextField(

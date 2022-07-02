@@ -43,5 +43,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Select animal photos to be uploaded</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photos of animals to be uploaded</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Take videos of animals to be uploaded</string>
 </dict>
 </plist>
